@@ -5,13 +5,12 @@
 #include <memory>
 #include <fstream>
 
-//DCL50: 
+//DCL50: Do not utilize C style variadic functions
 //DCL58: Standard name spaces are not changed
 using namespace std;
 template<typename T, typename... Args>
 void DisplayAllCarsInfo(const T& car, Args... args) {
-    std::cout << "Welcome to the Car Garage!" << std::endl;
-    std::cout << "Here are the cars parked in the garage:" << std::endl;
+    std::cout << "Here are the cars You provided:" << std::endl;
 
     car->displayCar();  // Display the first car
 
@@ -50,9 +49,9 @@ class Car
             std::basic_string<char> model = this->model;
             std::basic_string<char> make = this->make;
 
-            std::cout << "The information you provided: " << endl;
 
             /* STR52 - Valid iterator referencing elements in the basic_string */
+            //CTR50 ensuring that our indices to navigate array is within valid range
              for(std::basic_string<char>::iterator i = make.begin(); i != make.end(); i++) 
             {
                 std::cout << *i;
@@ -108,13 +107,19 @@ int main()
     cin >> color;
 
     Car *car = new Car(make, model, color);
+    Car *carExtra = new Car("thing", "thing", "thing");
+    std::cout << "The information you provided: " << endl;
     car->displayCar();
+    DisplayAllCarsInfo(car,carExtra);
     car = nullptr;
     delete car;
-    //MEM51
+    //MEM50: Not accessing the car object after deletion
+    //MEM51: Properly deallocating by making sure that dynamically allocated memory is a null pointer before deletetion 
     //MEM52: Memory is dynamically allocated with 'new Car' and then deallocated with 'delete car'
+    //MEM53: Pointers are not dereferenced and references to objects that are out of scope are also not dereferenced.
     //EXP54 -After deleting an object it should no longer be accessed otherwise undefined behavior
-    // DisplayAllCarsInfo(car);
+    //EXP53 Do not access uninitalized memory
+    
 
 
     cout << "Enter your 3 favorite cars" << endl;
@@ -143,6 +148,3 @@ int main()
                     
     return 0;
 }
-
-
-
